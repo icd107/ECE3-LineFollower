@@ -1,0 +1,16 @@
+speed	kP		kD		Comments
+--------------------------------
+50		50		300		Jerky frequently, went off course
+50		50		100		Slight waves, small amplitutde but high frequency, completed the course
+50		100		100		High jerking, sharp turns, high frequency, quickly went off course
+50		25		100		Completed course, high jerking, started off wavy
+50		40		100		Completed course and turny course, slight jerking, a little wavy
+
+75		40		100		High jerking, normal frequency, got off course quickly
+75		20		100		Low frequency waves, slight jerking, got off course almost near the end/middle
+75		20		150		Low frequency waves, light jerking, got off course around 8, stayed straight longer
+75		40		150		Jerky, got off course halfway throughish
+75		40		200		Jerky, osciallations increased until it got off course halfway through
+75		80		200		SUper jerky, got off course almost immediently
+75		50		200		Jerky, high frequency, got off course halfway
+75		30		200		Jerky, increased amplitude adn frequency as it drove, got off course halfway throguh
