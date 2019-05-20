@@ -46,8 +46,8 @@ const int milliDelay = 2;
 const double errorThreshold = 50;
 
 // PID Constants
-const double kP = 30;
-const double kD = 150;
+const double kP = 20;
+const double kD = 200;
 
 // Variables
 bool offTrack;
@@ -166,6 +166,10 @@ void loop() {
 
     pastDir = error;
     pastMotorSpeed = motorSpeed;
+
+    //printPhotoPins();
+    //Serial.print(motorSpeed);
+    //Serial.print("\n");
 }
 
 void setUpMotorPins()
