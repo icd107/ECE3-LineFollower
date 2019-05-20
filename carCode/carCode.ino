@@ -54,11 +54,9 @@ bool offTrack;
 double pastDir;
 double pastMotorSpeed;
 bool offRight;
+int lineCount;
 
 void setup() {
-
-    Serial.begin(9600);
-
     setUpMotorPins();
 
     // Set up diode pins
@@ -71,6 +69,7 @@ void setup() {
     offTrack = false;
     pastDir = 0;
     offRight = false;
+    lineCount = 0;
 }
 
 void loop() {
@@ -109,6 +108,18 @@ void loop() {
     {
         analogWrite(right_pwm_pin, 0);
         analogWrite(left_pwm_pin, 0);
+        delay(10);
+        lineCount++;
+        if (lineCount == 2)
+        { 
+          analogWrite(right_pwm_pin, 75);
+          analogWrite(left_pwm_pin, -75);
+        }
+        if (lineCount == 4)
+        {
+           analogWrite(right_pwm_pin, 0);
+           analogWrite(left_pwm_pin, 0);
+        }
     }
 
     // if the car is seeing more than 3 sensor values, it is probably bogus and should not be counted
@@ -155,10 +166,6 @@ void loop() {
 
     pastDir = error;
     pastMotorSpeed = motorSpeed;
-
-    printPhotoPins();
-    //Serial.print(motorSpeed);
-    //Serial.print("\n");
 }
 
 void setUpMotorPins()
@@ -200,19 +207,6 @@ void dwPhotoPins(bool state)
     digitalWrite(photoPin6, state);
     digitalWrite(photoPin7, state);
     digitalWrite(photoPin8, state);
-}
-
-void printPhotoPins()
-{
-    Serial.print(refL1);
-    Serial.print(refL2);
-    Serial.print(refL3);
-    Serial.print(refL4);
-    Serial.print(refL5);
-    Serial.print(refL6);
-    Serial.print(refL7);
-    Serial.print(refL8);
-    Serial.print("\t");
 }
 
 // Find your error (in my code, error)
