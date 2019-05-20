@@ -42,6 +42,7 @@ const int findLineScale = 3;
 // Delay Constants
 const int microDelay = 5;
 const int milliDelay = 2;
+const int timeToTurn = 1200;
 
 // Past Directions
 const double errorThreshold = 50;
@@ -51,13 +52,10 @@ const double kP = 40;
 const double kD = 100;
 
 // Variables
-bool offTrack;
 double pastDir;
 double pastMotorSpeed;
-bool offRight;
 int lineCount;
 int pastReadingCount;
-bool sawTwo;
 
 void setup() {
     setUpMotorPins();
@@ -69,12 +67,9 @@ void setup() {
     digitalWrite(IR_LED_odd, HIGH);
     digitalWrite(IR_LED_even, HIGH);
     
-    offTrack = false;
     pastDir = 0;
-    offRight = false;
     lineCount = 0;
     pastReadingCount = 0;
-    sawTwo = false;
 }
 
 void loop() {
@@ -120,7 +115,7 @@ void loop() {
             digitalWrite(left_dir_pin, HIGH);
             analogWrite(right_pwm_pin, turnSpeed);
             analogWrite(left_pwm_pin, turnSpeed);
-            delay(1200);
+            delay(timeToTurn);
             digitalWrite(left_dir_pin, LOW);
             break;
           // Seeing the line at the end of the track and stopping
@@ -144,46 +139,13 @@ void loop() {
     // the car sees the right line or none at all
     else if(lineCount != 2)
     {
-        if(readingCount == 0)
-        {
-            offTrack = true;
-            if((error - pastDir) > 0)
-                offRight = true;
-            else if((error - pastDir) < 0)
-                offRight = false;
-        }
-        else
-            offTrack = false;
-
-        if(!offTrack)
-        {
-            analogWrite(right_pwm_pin, speed + motorSpeed);
-            analogWrite(left_pwm_pin, speed - motorSpeed);
-        }
-        else if(offTrack)
-        {
-            if(offRight)
-            {
-                analogWrite(right_pwm_pin, speed + findLineScale);
-                analogWrite(left_pwm_pin, speed - findLineScale);
-                //delay(5);
-            }
-            else
-            {
-                analogWrite(right_pwm_pin, speed - findLineScale);
-                analogWrite(left_pwm_pin, speed + findLineScale);
-                //delay(5);
-            }
-        }
+        analogWrite(right_pwm_pin, speed + motorSpeed);
+        analogWrite(left_pwm_pin, speed - motorSpeed);
     }
 
     pastDir = error;
     pastMotorSpeed = motorSpeed;
     pastReadingCount = readingCount;
-
-    //printPhotoPins();
-    //Serial.print(motorSpeed);
-    //Serial.print("\n");
 }
 
 void setUpMotorPins()
@@ -226,8 +188,3 @@ void dwPhotoPins(bool state)
     digitalWrite(photoPin7, state);
     digitalWrite(photoPin8, state);
 }
-
-// Find your error (in my code, error)
-// Sign of the error tells you if you're left or right
-
-// Find out which zero error is on the line and off the line
