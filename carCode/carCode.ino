@@ -34,7 +34,7 @@ const int IR_LED_odd = 45;
 const int IR_LED_even = 61;
 
 // Speed Constants
-const int speed = 75;
+const int speed = 50;
 const int turnSpeed = 50;
 const int dirScale = 5;
 const int findLineScale = 3;
@@ -47,7 +47,7 @@ const int milliDelay = 2;
 const double errorThreshold = 50;
 
 // PID Constants
-const double kP = 20;
+const double kP = 40;
 const double kD = 100;
 
 // Variables
@@ -57,6 +57,7 @@ double pastMotorSpeed;
 bool offRight;
 int lineCount;
 int pastReadingCount;
+bool sawTwo;
 
 void setup() {
     setUpMotorPins();
@@ -73,6 +74,7 @@ void setup() {
     offRight = false;
     lineCount = 0;
     pastReadingCount = 0;
+    sawTwo = false;
 }
 
 void loop() {
@@ -113,25 +115,16 @@ void loop() {
 
         switch(lineCount)
         {
-          // Starting at the line
-          case 1:
-            break;
           // Seeing the line at the end of the track and turning around
-          case 2:
+          case 1:
             digitalWrite(left_dir_pin, HIGH);
             analogWrite(right_pwm_pin, turnSpeed);
             analogWrite(left_pwm_pin, turnSpeed);
-            delayMicroseconds(10);
+            delay(1200);
+            digitalWrite(left_dir_pin, LOW);
             break;
-          // Seeing the line and knowing to stop turning and begin the track again
-          case 3:
-            /*digitalWrite(left_dir_pin, LOW);
-            analogWrite(right_pwm_pin, turnSpeed);
-            analogWrite(left_pwm_pin, turnSpeed);
-            delayMicroseconds(10);
-            break;*/
           // Seeing the line at the end of the track and stopping
-          case 4:
+          case 2:
             analogWrite(right_pwm_pin, 0);
             analogWrite(left_pwm_pin, 0);
             pastMotorSpeed = 0;
@@ -142,23 +135,14 @@ void loop() {
         }
     }
 
-    if(readingCount == 2 && refL4 && refL5 && lineCount == 2)
-    {
-      lineCount++;
-      digitalWrite(left_dir_pin, LOW);
-      analogWrite(right_pwm_pin, turnSpeed);
-      analogWrite(left_pwm_pin, turnSpeed);
-      delayMicroseconds(10);
-    }
-
     // if the car is seeing more than 3 sensor values, it is probably bogus and should not be counted
-    else if(readingCount > 3 && (lineCount == 1 || lineCount == 3 || lineCount == 0))
+    else if(readingCount > 3)
     {
         motorSpeed = pastMotorSpeed;
     }
 
     // the car sees the right line or none at all
-    else if(lineCount == 1 || lineCount == 3 || lineCount == 0)
+    else if(lineCount != 2)
     {
         if(readingCount == 0)
         {
