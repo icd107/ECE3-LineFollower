@@ -21,3 +21,4 @@ Serial prints were all removed
 75		30		100		Same as above
 75		20		100		Smoother but still would get off track as soon as second turn started
 75		20		200		Same as above :/
+75		20		200		Started from other side of track and it still got off on the bad turn
