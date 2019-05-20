@@ -35,6 +35,7 @@ const int IR_LED_even = 61;
 
 // Speed Constants
 const int speed = 75;
+const int turnSpeed = 50;
 const int dirScale = 5;
 const int findLineScale = 3;
 
@@ -106,30 +107,44 @@ void loop() {
     // if the car is seeing the line, so all the sensors are lit up
     if(readingCount == 8)
     {
-        analogWrite(right_pwm_pin, 0);
-        analogWrite(left_pwm_pin, 0);
-        delay(10);
         lineCount++;
-        if (lineCount == 2)
-        { 
-          analogWrite(right_pwm_pin, 75);
-          analogWrite(left_pwm_pin, -75);
-        }
-        if (lineCount == 4)
+
+        switch(lineCount)
         {
-           analogWrite(right_pwm_pin, 0);
-           analogWrite(left_pwm_pin, 0);
+          // Starting at the line
+          case 1:
+            break;
+          // Seeing the line at the end of the track and turning around
+          case 2:
+            analogWrite(right_pwm_pin, turnSpeed);
+            analogWrite(left_pwm_pin, -turnSpeed);
+            break;
+          // Seeing the line and knowing to stop turning and begin the track again
+          case 3:
+            analogWrite(right_pwm_pin, turnSpeed);
+            analogWrite(left_pwm_pin, turnSpeed);
+            delayMicroseconds(10);
+            break;
+          // Seeing the line at the end of the track and stopping
+          case 4:
+            analogWrite(right_pwm_pin, 0);
+            analogWrite(left_pwm_pin, 0);
+            pastMotorSpeed = 0;
+            delay(10);
+            break;
+          default:
+            break;
         }
     }
 
     // if the car is seeing more than 3 sensor values, it is probably bogus and should not be counted
-    else if(readingCount > 3)
+    else if(readingCount > 3 && (lineCount == 1 || lineCount == 3))
     {
         motorSpeed = pastMotorSpeed;
     }
 
     // the car sees the right line or none at all
-    else
+    else if(lineCount == 1 || lineCount == 3)
     {
         if(readingCount == 0)
         {
