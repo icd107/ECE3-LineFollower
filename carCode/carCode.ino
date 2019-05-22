@@ -139,8 +139,24 @@ void loop() {
     // the car sees the right line or none at all
     else if(lineCount != 2)
     {
-        analogWrite(right_pwm_pin, speed + motorSpeed);
-        analogWrite(left_pwm_pin, speed - motorSpeed);
+        // if the car is turning to the left a significant amount
+        if(motorSpeed > 30)
+        {
+            analogWrite(right_pwm_pin, speed + motorSpeed);
+            analogWrite(left_pwm_pin, 0.5 * (speed - motorSpeed));
+        }
+        // if the car is turning to the right a signifcant amount
+        else if(motorSpeed < -30)
+        {
+            analogWrite(right_pwm_pin, 0.5 * (speed + motorSpeed));
+            analogWrite(left_pwm_pin, speed - motorSpeed);
+        }
+        // if the car is not making a sharp turn
+        else
+        {
+            analogWrite(right_pwm_pin, speed + motorSpeed);
+            analogWrite(left_pwm_pin, speed - motorSpeed);
+        }
     }
 
     pastDir = error;
