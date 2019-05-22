@@ -1,4 +1,4 @@
-UCLA ECE3 Introduction To Electrical Engineering Final Project
+UCLA ECE-3 Introduction To Electrical Engineering Final Project
 --------------------------------------------------------------
 Code written by Isabel Dominik and Jackie Peng
 
