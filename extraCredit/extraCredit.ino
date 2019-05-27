@@ -166,7 +166,7 @@ void loop() {
         motorSpeed = pastMotorSpeed;
     }
 
-    if(schoolZoneSpeed)
+    if(inSchoolZone)
     {
         digitalWrite(LED, HIGH);
     }
