@@ -48,7 +48,7 @@ const double errorThreshold = 50;
 
 // PID Constants
 const double kP = 40;
-const double kD = 175;
+const double kD = 150;
 
 // Variables
 double pastDir;
