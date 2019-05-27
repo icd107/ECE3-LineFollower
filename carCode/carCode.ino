@@ -34,21 +34,21 @@ const int IR_LED_odd = 45;
 const int IR_LED_even = 61;
 
 // Speed Constants
-const int speed = 50;
-const int turnSpeed = 50;
+const int speed = 75;
+const int turnSpeed = 85;
 const int dirScale = 5;
 
 // Delay Constants
 const int microDelay = 5;
 const int milliDelay = 2;
-const int timeToTurn = 1200;
+const int timeToTurn = 700;
 
 // Past Directions
 const double errorThreshold = 50;
 
 // PID Constants
 const double kP = 40;
-const double kD = 100;
+const double kD = 150;
 
 // Variables
 double pastDir;
@@ -103,7 +103,7 @@ void loop() {
     double motorSpeed = kP * error + kD * (error - pastDir);
 
     // if the car is seeing the line, so all the sensors are lit up
-    if(readingCount == 8 && pastReadingCount != 8)
+    if(readingCount >= 5 && pastReadingCount < 5)
     {
         lineCount++;
 
@@ -138,8 +138,24 @@ void loop() {
     // the car sees the right line or none at all
     else if(lineCount != 2)
     {
-        analogWrite(right_pwm_pin, speed + motorSpeed);
-        analogWrite(left_pwm_pin, speed - motorSpeed);
+        // if the car is turning to the left a significant amount
+        if(motorSpeed < -30)
+        {
+            analogWrite(right_pwm_pin, speed + motorSpeed);
+            analogWrite(left_pwm_pin, 0.6 * (speed - motorSpeed));
+        }
+        // if the car is turning to the right a signifcant amount
+        else if(motorSpeed > 30)
+        {
+            analogWrite(right_pwm_pin, 0.6 * (speed + motorSpeed));
+            analogWrite(left_pwm_pin, speed - motorSpeed);
+        }
+        // if the car is not making a sharp turn
+        else
+        {
+            analogWrite(right_pwm_pin, speed + motorSpeed);
+            analogWrite(left_pwm_pin, speed - motorSpeed);
+        }
     }
 
     pastDir = error;
