@@ -1,6 +1,6 @@
-const int ELB = 12;
+#define ELB P5_2
 
-int ELBticks = 0;
+int ELBticks;
 
 int ELB_start_time = 0;
 bool ELB_last_state = 0;
@@ -11,7 +11,7 @@ void setup2 ()
 {
   pinMode(ELB, INPUT);
   
-  ELBticks = maxticks;
+  ELBticks = maxTicks;
 }
 
 void loop2()
@@ -20,7 +20,7 @@ void loop2()
   ELB_last_state = 0;
   ELB_current_state = 0;
   
-  while (ELBticks < maxticks)
+  while (ELBticks < maxTicks)
   {
     ELB_current_state = digitalRead(ELB);
     

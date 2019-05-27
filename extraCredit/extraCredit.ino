@@ -45,8 +45,8 @@ const double errorThreshold = 50;
 const double kP = 40;
 const double kD = 100;
 
-const double kSP = 40;
-const double kSD = 100;
+const double kSP = 10;
+const double kSD = 0;
 
 // Variables
 double pastDir;
@@ -60,19 +60,21 @@ bool inSchoolZone;
 // Encoder variables
 int diffR;
 int diffL;
-const int maxTicks = 10;
+const double maxTicks = 10;
 
 const int ticksPerRev = 12;
 const double wheelDiameter = 7; // Measure real value, cm
 const double wheelCirc = 3.14 * wheelDiameter;
 
-const int schoolZoneSpeed = 40;
-const int normalSpeed = 60;
-const int baseSpeed = 40;
+const double schoolZoneSpeed = 5;
+const double normalSpeed = 15;
+const double baseSpeed = 40;
 
 int targetSpeed;
 
 void setup() {
+    Serial.begin(9600);
+  
     setUpMotorPins();
 
     // Set up diode pins
@@ -88,11 +90,14 @@ void setup() {
     lineCount = 0;
     pastReadingCount = 0;
     inSchoolZone = false;
-    pastSpeedCount = 0;
+    pastSpeedError = 0;
     diffR = 0;
     diffL = 0;
 
     targetSpeed = normalSpeed;
+
+    analogWrite(right_pwm_pin, baseSpeed);
+    analogWrite(left_pwm_pin, baseSpeed);
 }
 
 void loop() {
@@ -126,11 +131,14 @@ void loop() {
 
     double motorSpeed = kP * error + kD * (error - pastDir);
 
-    // Encoder speed calculation
-    int diffAverage = (diffR + diffL) / 2
-    double currSpeed = maxTicks / diffAverage / ticksPerRev * wheelCirc * 0.001;
+    Serial.print(readingCount);
+    Serial.print('\n');
 
-    double speedError = targetSpeed - currentSpeed;
+    // Encoder speed calculation
+    double diffAverage = (diffR + diffL) / 2;
+    double currSpeed = maxTicks / diffAverage / ticksPerRev / 120 * wheelCirc / 0.001;
+
+    double speedError = targetSpeed - currSpeed;
 
     double encoderSpeed = kSP * speedError + kSD * (speedError - pastSpeedError);
 
@@ -175,7 +183,6 @@ void loop() {
         digitalWrite(LED, LOW);
     }
 
-    // the car sees the right line or none at all
     analogWrite(right_pwm_pin, baseSpeed + encoderSpeed + motorSpeed);
     analogWrite(left_pwm_pin, baseSpeed + encoderSpeed - motorSpeed);
 

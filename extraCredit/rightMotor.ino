@@ -1,6 +1,6 @@
-const int ERB = 13;
+#define ERB P5_0
 
-int ERBticks = 0;
+int ERBticks;
 
 int ERB_start_time = 0;
 bool ERB_last_state = 0;
@@ -11,7 +11,7 @@ void setup3()
 {
   pinMode(ERB, INPUT);
   
-  ERBticks = maxticks;
+  ERBticks = maxTicks;
 }
 
 void loop3()
@@ -20,7 +20,7 @@ void loop3()
   ERB_last_state = 0;
   ERB_current_state = 0;
   
-  while (ERBticks < maxticks)
+  while (ERBticks < maxTicks)
   {
     ERB_current_state = digitalRead(ERB);
     
