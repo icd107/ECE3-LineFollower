@@ -23,3 +23,7 @@ Serial prints were all removed
 75		20		200		Same as above :/
 75		20		200		Started from other side of track and it still got off on the bad turn
 75		20		100		Works p well on both tracks, still gets off on that one part of the track, not sure if that's the track problem or a car problem
+
+65		40		100		Worked on the whole track! :) But, it was wavy the whole time (use slow inner wheel code)
+
+75		40		150		Works on the track with the slow inner wheel code! Sometimes doesn't stop
