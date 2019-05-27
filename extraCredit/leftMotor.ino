@@ -1,37 +1,37 @@
-#define ELA P10_5
+const int ELB = 12;
 
-int ELAticks = 0;
+int ELBticks = 0;
 
-int ELA_start_time = 0;
-bool ELA_last_state = 0;
-bool ELA_current_state = 0;
+int ELB_start_time = 0;
+bool ELB_last_state = 0;
+bool ELB_current_state = 0;
 
 
 void setup2 ()
 {
-  pinMode(ELA, INPUT);
+  pinMode(ELB, INPUT);
   
-  ELAticks = maxticks;
+  ELBticks = maxticks;
 }
 
 void loop2()
 {
-  ELA_start_time = millis();
-  ELA_last_state = 0;
-  ELA_current_state = 0;
+  ELB_start_time = millis();
+  ELB_last_state = 0;
+  ELB_current_state = 0;
   
-  while (ELAticks < maxticks)
+  while (ELBticks < maxticks)
   {
-    ELA_current_state = digitalRead(ELA);
+    ELB_current_state = digitalRead(ELB);
     
-    if (ELA_current_state && !ELA_last_state) //rising edge
+    if (ELB_current_state && !ELB_last_state) //rising edge
     {
-      ELAticks++;
+      ELBticks++;
     }
     
-    ELA_last_state = ELA_current_state;
+    ELB_last_state = ELB_current_state;
   }
   
-  diffL = millis() - ELA_start_time;
-  ELAticks = 0;
+  diffL = millis() - ELB_start_time;
+  ELBticks = 0;
 }

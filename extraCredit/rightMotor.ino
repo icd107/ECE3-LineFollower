@@ -1,37 +1,37 @@
-#define ERA P10_5
+const int ERB = 13;
 
-int ERAticks = 0;
+int ERBticks = 0;
 
-int ERA_start_time = 0;
-bool ERA_last_state = 0;
-bool ERA_current_state = 0;
+int ERB_start_time = 0;
+bool ERB_last_state = 0;
+bool ERB_current_state = 0;
 
 
 void setup3()
 {
-  pinMode(ERA, INPUT);
+  pinMode(ERB, INPUT);
   
-  ERAticks = maxticks;
+  ERBticks = maxticks;
 }
 
 void loop3()
 {
-  ERA_start_time = millis();
-  ERA_last_state = 0;
-  ERA_current_state = 0;
+  ERB_start_time = millis();
+  ERB_last_state = 0;
+  ERB_current_state = 0;
   
-  while (ERAticks < maxticks)
+  while (ERBticks < maxticks)
   {
-    ERA_current_state = digitalRead(ERA);
+    ERB_current_state = digitalRead(ERB);
     
-    if (ERA_current_state && !ERA_last_state) //rising edge
+    if (ERB_current_state && !ERB_last_state) //rising edge
     {
-      ELAticks++;
+      ERBticks++;
     }
     
-    ERA_last_state = ERA_current_state;
+    ERB_last_state = ERB_current_state;
   }
   
-  diffR = millis() - ERA_start_time;
-  ERAticks = 0;
+  diffR = millis() - ERB_start_time;
+  ERBticks = 0;
 }
