@@ -20,24 +20,23 @@ const int photoPin7 = 53;
 const int photoPin8 = 69; // right side of car
 
 // Transistor Weight Constants
-const double photoWeight1 = -1.0;
+const double photoWeight1 = -1.2;
 const double photoWeight2 = -0.7;
 const double photoWeight3 = -0.35;
 const double photoWeight4 = -0.1;
 const double photoWeight5 =  0.1;
 const double photoWeight6 =  0.35;
 const double photoWeight7 =  0.7;
-const double photoWeight8 =  1.0;
+const double photoWeight8 =  1.2;
 
 // LED Constants
 const int IR_LED_odd = 45;
 const int IR_LED_even = 61;
 
 // Speed Constants
-const int speed = 50;
+const int speed = 75;
 const int turnSpeed = 50;
 const int dirScale = 5;
-const int findLineScale = 3;
 
 // Delay Constants
 const int microDelay = 5;
@@ -48,7 +47,7 @@ const int timeToTurn = 1200;
 const double errorThreshold = 50;
 
 // PID Constants
-const double kP = 40;
+const double kP = 20;
 const double kD = 100;
 
 // Variables
@@ -140,15 +139,15 @@ void loop() {
     else if(lineCount != 2)
     {
         // if the car is turning to the left a significant amount
-        if(motorSpeed > 30)
+        if(motorSpeed < -30)
         {
             analogWrite(right_pwm_pin, speed + motorSpeed);
-            analogWrite(left_pwm_pin, 0.5 * (speed - motorSpeed));
+            analogWrite(left_pwm_pin, 0.6 * (speed - motorSpeed));
         }
         // if the car is turning to the right a signifcant amount
-        else if(motorSpeed < -30)
+        else if(motorSpeed > 30)
         {
-            analogWrite(right_pwm_pin, 0.5 * (speed + motorSpeed));
+            analogWrite(right_pwm_pin, 0.6 * (speed + motorSpeed));
             analogWrite(left_pwm_pin, speed - motorSpeed);
         }
         // if the car is not making a sharp turn
