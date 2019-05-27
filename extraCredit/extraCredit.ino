@@ -32,6 +32,7 @@ const double photoWeight8 =  1.0;
 // LED Constants
 const int IR_LED_odd = 45;
 const int IR_LED_even = 61;
+const int LED = BLUE_LED;
 
 // Delay Constants
 const int microDelay = 5;
@@ -60,8 +61,10 @@ bool inSchoolZone;
 int diffR;
 int diffL;
 const int maxTicks = 10;
+
 const int ticksPerRev = 12;
-const double wheelDiameter = 10; // Measure real value, cm
+const double wheelDiameter = 7; // Measure real value, cm
+const double wheelCirc = 3.14 * wheelDiameter;
 
 const int schoolZoneSpeed = 40;
 const int normalSpeed = 60;
@@ -75,9 +78,11 @@ void setup() {
     // Set up diode pins
     pinMode(IR_LED_odd, OUTPUT);
     pinMode(IR_LED_even, OUTPUT);
+    pinMode(LED, OUTPUT);
 
     digitalWrite(IR_LED_odd, HIGH);
     digitalWrite(IR_LED_even, HIGH);
+    digitalWrite(LED, LOW);
     
     pastDir = 0;
     lineCount = 0;
@@ -123,14 +128,14 @@ void loop() {
 
     // Encoder speed calculation
     int diffAverage = (diffR + diffL) / 2
-    double currSpeed = maxTicks / diffAverage / ticksPerRev * wheelDiameter * 0.001;
+    double currSpeed = maxTicks / diffAverage / ticksPerRev * wheelCirc * 0.001;
 
     double speedError = targetSpeed - currentSpeed;
 
-    double encoderSpeed = kSP * speedError + kD * (speedError - pastSpeedError);
+    double encoderSpeed = kSP * speedError + kSD * (speedError - pastSpeedError);
 
     // if the car is seeing the line, so all the sensors are lit up
-    if(readingCount == 8 && pastReadingCount != 8)
+    if(readingCount >= 6 && pastReadingCount < 6)
     {
         lineCount++;
 
@@ -159,6 +164,15 @@ void loop() {
     else if(readingCount > 3)
     {
         motorSpeed = pastMotorSpeed;
+    }
+
+    if(schoolZoneSpeed)
+    {
+        digitalWrite(LED, HIGH);
+    }
+    else
+    {
+        digitalWrite(LED, LOW);
     }
 
     // the car sees the right line or none at all
