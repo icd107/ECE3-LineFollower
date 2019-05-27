@@ -37,7 +37,6 @@ const int IR_LED_even = 61;
 const int speed = 50;
 const int turnSpeed = 50;
 const int dirScale = 5;
-const int findLineScale = 3;
 
 // Delay Constants
 const int microDelay = 5;

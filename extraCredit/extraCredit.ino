@@ -33,16 +33,9 @@ const double photoWeight8 =  1.0;
 const int IR_LED_odd = 45;
 const int IR_LED_even = 61;
 
-// Speed Constants
-const int speed = 50;
-const int turnSpeed = 50;
-const int dirScale = 5;
-const int findLineScale = 3;
-
 // Delay Constants
 const int microDelay = 5;
 const int milliDelay = 2;
-const int timeToTurn = 1200;
 
 // Past Directions
 const double errorThreshold = 50;
@@ -51,11 +44,30 @@ const double errorThreshold = 50;
 const double kP = 40;
 const double kD = 100;
 
+const double kSP = 40;
+const double kSD = 100;
+
 // Variables
 double pastDir;
 double pastMotorSpeed;
 int lineCount;
 int pastReadingCount;
+int pastSpeedError;
+
+bool inSchoolZone;
+
+// Encoder variables
+int diffR;
+int diffL;
+const int maxTicks = 10;
+const int ticksPerRev = 12;
+const double wheelDiameter = 10; // Measure real value, cm
+
+const int schoolZoneSpeed = 40;
+const int normalSpeed = 60;
+const int baseSpeed = 40;
+
+int targetSpeed;
 
 void setup() {
     setUpMotorPins();
@@ -70,6 +82,12 @@ void setup() {
     pastDir = 0;
     lineCount = 0;
     pastReadingCount = 0;
+    inSchoolZone = false;
+    pastSpeedCount = 0;
+    diffR = 0;
+    diffL = 0;
+
+    targetSpeed = normalSpeed;
 }
 
 void loop() {
@@ -103,6 +121,14 @@ void loop() {
 
     double motorSpeed = kP * error + kD * (error - pastDir);
 
+    // Encoder speed calculation
+    int diffAverage = (diffR + diffL) / 2
+    double currSpeed = maxTicks / diffAverage / ticksPerRev * wheelDiameter * 0.001;
+
+    double speedError = targetSpeed - currentSpeed;
+
+    double encoderSpeed = kSP * speedError + kD * (speedError - pastSpeedError);
+
     // if the car is seeing the line, so all the sensors are lit up
     if(readingCount == 8 && pastReadingCount != 8)
     {
@@ -110,16 +136,15 @@ void loop() {
 
         switch(lineCount)
         {
-          // Seeing the line at the end of the track and turning around
           case 1:
-            digitalWrite(left_dir_pin, HIGH);
-            analogWrite(right_pwm_pin, turnSpeed);
-            analogWrite(left_pwm_pin, turnSpeed);
-            delay(timeToTurn);
-            digitalWrite(left_dir_pin, LOW);
+            inSchoolZone = true;
+            targetSpeed = schoolZoneSpeed;
             break;
-          // Seeing the line at the end of the track and stopping
           case 2:
+            inSchoolZone = false;
+            targetSpeed = normalSpeed;
+            break;
+          case 3:
             analogWrite(right_pwm_pin, 0);
             analogWrite(left_pwm_pin, 0);
             pastMotorSpeed = 0;
@@ -137,15 +162,13 @@ void loop() {
     }
 
     // the car sees the right line or none at all
-    else if(lineCount != 2)
-    {
-        analogWrite(right_pwm_pin, speed + motorSpeed);
-        analogWrite(left_pwm_pin, speed - motorSpeed);
-    }
+    analogWrite(right_pwm_pin, baseSpeed + encoderSpeed + motorSpeed);
+    analogWrite(left_pwm_pin, baseSpeed + encoderSpeed - motorSpeed);
 
     pastDir = error;
     pastMotorSpeed = motorSpeed;
     pastReadingCount = readingCount;
+    pastSpeedError = speedError;
 }
 
 void setUpMotorPins()
