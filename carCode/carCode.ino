@@ -1,5 +1,6 @@
 // LINE FOLLOWING CAR
 // MAIN FILE
+// 42 seconds
 
 // Motor Constants
 const int left_nslp_pin  = 31;  // nslp = not sleep --> set high --> digitalWrite
@@ -122,7 +123,7 @@ void loop() {
             analogWrite(right_pwm_pin, 0);
             analogWrite(left_pwm_pin, 0);
             pastMotorSpeed = 0;
-            delay(10);
+            delay(50);
             break;
           default:
             break;
