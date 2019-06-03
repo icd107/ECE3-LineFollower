@@ -35,7 +35,7 @@ const int IR_LED_odd = 45;
 const int IR_LED_even = 61;
 
 // Speed Constants
-const int speed = 75;
+const int speed = 65;
 const int turnSpeed = 85;
 const int dirScale = 5;
 
@@ -48,7 +48,7 @@ const int timeToTurn = 700;
 const double errorThreshold = 50;
 
 // PID Constants
-const double kP = 40;
+const double kP = 50;
 const double kD = 150;
 
 // Variables
@@ -104,7 +104,7 @@ void loop() {
     double motorSpeed = kP * error + kD * (error - pastDir);
 
     // if the car is seeing the line, so all the sensors are lit up
-    if(readingCount >= 5 && pastReadingCount < 5)
+    if(readingCount >= 6 && pastReadingCount < 6)
     {
         lineCount++;
 
@@ -131,7 +131,7 @@ void loop() {
     }
 
     // if the car is seeing more than 3 sensor values, it is probably bogus and should not be counted
-    else if(readingCount > 3)
+    else if(readingCount > 4)
     {
         motorSpeed = pastMotorSpeed;
     }
