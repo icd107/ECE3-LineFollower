@@ -35,8 +35,8 @@ const int IR_LED_even = 61;
 const int LED = BLUE_LED;
 
 // Delay Constants
-const int microDelay = 5;
-const int milliDelay = 2;
+const int microDelay = 5; //5
+const int milliDelay = 2; //2
 
 // Past Directions
 const double errorThreshold = 50;
@@ -122,6 +122,16 @@ void loop() {
     bool refL7 = digitalRead(photoPin7);
     bool refL8 = digitalRead(photoPin8);
 
+    Serial.print(refL1);
+    Serial.print(refL2);
+    Serial.print(refL3);
+    Serial.print(refL4);
+    Serial.print(refL5);
+    Serial.print(refL6);
+    Serial.print(refL7);
+    Serial.print(refL8);
+    
+
     double error = refL1 * photoWeight1 + refL2 * photoWeight2
                      + refL3 * photoWeight3 + refL4 * photoWeight4
                      + refL5 * photoWeight5 + refL6 * photoWeight6
@@ -185,6 +195,7 @@ void loop() {
 
     analogWrite(right_pwm_pin, baseSpeed + encoderSpeed + motorSpeed);
     analogWrite(left_pwm_pin, baseSpeed + encoderSpeed - motorSpeed);
+    //digitalWrite(LED, HIGH);
 
     pastDir = error;
     pastMotorSpeed = motorSpeed;
