@@ -33,6 +33,7 @@ const double photoWeight8 =  1.0;
 const int IR_LED_odd = 45;
 const int IR_LED_even = 61;
 const int LED = BLUE_LED;
+const int RED = RED_LED;
 
 // Delay Constants
 const int microDelay = 5; //5
@@ -67,7 +68,7 @@ const double wheelDiameter = 7; // Measure real value, cm
 const double wheelCirc = 3.14 * wheelDiameter;
 
 const double schoolZoneSpeed = 5;
-const double normalSpeed = 15;
+const double normalSpeed = 10;
 const double baseSpeed = 40;
 
 int targetSpeed;
@@ -81,10 +82,12 @@ void setup() {
     pinMode(IR_LED_odd, OUTPUT);
     pinMode(IR_LED_even, OUTPUT);
     pinMode(LED, OUTPUT);
+    pinMode(RED, OUTPUT);
 
     digitalWrite(IR_LED_odd, HIGH);
     digitalWrite(IR_LED_even, HIGH);
     digitalWrite(LED, LOW);
+    digitalWrite(RED, LOW);
     
     pastDir = 0;
     lineCount = 0;
@@ -96,8 +99,8 @@ void setup() {
 
     targetSpeed = normalSpeed;
 
-    analogWrite(right_pwm_pin, baseSpeed);
-    analogWrite(left_pwm_pin, baseSpeed);
+    //analogWrite(right_pwm_pin, baseSpeed);
+    //analogWrite(left_pwm_pin, baseSpeed);
 }
 
 void loop() {
@@ -110,7 +113,7 @@ void loop() {
 
     photoPinMode(INPUT);
 
-    delay(milliDelay);
+    delayMicroseconds(1500);
 
     // Calculate the position based on the weights
     bool refL1 = digitalRead(photoPin1);
@@ -122,6 +125,11 @@ void loop() {
     bool refL7 = digitalRead(photoPin7);
     bool refL8 = digitalRead(photoPin8);
 
+    double error = refL1 * photoWeight1 + refL2 * photoWeight2
+                     + refL3 * photoWeight3 + refL4 * photoWeight4
+                     + refL5 * photoWeight5 + refL6 * photoWeight6
+                     + refL7 * photoWeight7 + refL8 * photoWeight8;
+
     Serial.print(refL1);
     Serial.print(refL2);
     Serial.print(refL3);
@@ -130,23 +138,26 @@ void loop() {
     Serial.print(refL6);
     Serial.print(refL7);
     Serial.print(refL8);
-    
-
-    double error = refL1 * photoWeight1 + refL2 * photoWeight2
-                     + refL3 * photoWeight3 + refL4 * photoWeight4
-                     + refL5 * photoWeight5 + refL6 * photoWeight6
-                     + refL7 * photoWeight7 + refL8 * photoWeight8;
+    Serial.print("\n");
 
     int readingCount = refL1 + refL2 + refL3 + refL4 + refL5 + refL6 + refL7 + refL8;
 
+    /*if(readingCount > 6)
+    {
+      digitalWrite(RED, HIGH);
+    }*/
+    
     double motorSpeed = kP * error + kD * (error - pastDir);
-
-    Serial.print(readingCount);
-    Serial.print('\n');
 
     // Encoder speed calculation
     double diffAverage = (diffR + diffL) / 2;
-    double currSpeed = maxTicks / diffAverage / ticksPerRev / 120 * wheelCirc / 0.001;
+
+    double currSpeed = 0;
+
+    if(diffAverage != 0)
+    {
+        currSpeed = maxTicks / diffAverage / ticksPerRev / 120 * wheelCirc * 1000;
+    }
 
     double speedError = targetSpeed - currSpeed;
 
@@ -156,7 +167,6 @@ void loop() {
     if(readingCount >= 6 && pastReadingCount < 6)
     {
         lineCount++;
-
         switch(lineCount)
         {
           case 1:
@@ -171,7 +181,7 @@ void loop() {
             analogWrite(right_pwm_pin, 0);
             analogWrite(left_pwm_pin, 0);
             pastMotorSpeed = 0;
-            delay(10);
+            delay(50);
             break;
           default:
             break;
@@ -184,18 +194,26 @@ void loop() {
         motorSpeed = pastMotorSpeed;
     }
 
+    int rightInput = baseSpeed + encoderSpeed + motorSpeed;
+    int leftInput = baseSpeed + encoderSpeed - motorSpeed;
+
+    if(lineCount < 3)
+    {
+      analogWrite(right_pwm_pin, rightInput);
+      analogWrite(left_pwm_pin, leftInput);
+      //digitalWrite(LED, HIGH);
+    }
+
     if(inSchoolZone)
     {
         digitalWrite(LED, HIGH);
+        delay(10);
     }
     else
     {
         digitalWrite(LED, LOW);
+        delay(10);
     }
-
-    analogWrite(right_pwm_pin, baseSpeed + encoderSpeed + motorSpeed);
-    analogWrite(left_pwm_pin, baseSpeed + encoderSpeed - motorSpeed);
-    //digitalWrite(LED, HIGH);
 
     pastDir = error;
     pastMotorSpeed = motorSpeed;
