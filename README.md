@@ -6,4 +6,8 @@ Line Follower is a program written in C++ that allows the TI-RSLK robotic car to
 
 To keep the car on the line, PD control is used (the integral term of PID was deemed not necessary to keep the car aligned with the track). Currently, the PD is tuned only for slower speeds. All PD tuning notes are contained in PID_Notes.txt.
 
+The working code for the assignment is in CarCode.
+
+The extra credit portion of the assignment wanted the car to monitor its speed with encoders, then when it encounters a horizontal line, turns on the blue LED and slows down. Once the car encounters another black line, the car turns off the LED and speeds up again, stopping at the end of the course. To speed up and slow down, the car uses primitive P control (not tuned).
+
 Developed using Energia for the TI-RSLK kit (TI Launchpad).
