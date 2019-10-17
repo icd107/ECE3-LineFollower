@@ -13,17 +13,20 @@ speed	kP		kD		Comments
 75		40		200		Jerky, oscillations increased until it got off course halfway through
 75		80		200		Super jerky, got off course almost immediently
 75		50		200		Jerky, high frequency, got off course halfway
-75		30		200		Jerky, increased amplitude adn frequency as it drove, got off course halfway throguh
+75		30		200		Jerky, increased amplitude adn frequency as it drove, got off course halfway through
 
-Serial prints were all removed
+**Serial prints were all removed**
 75		30		150		Completes the straight path well but not the curved one
-75		30		130		Still great on the straight path, but the curved one still doesn't make it to the second curve, oscillates less so improved over previous test case
+75		30		130		Still great on the straight path, but the curved one still doesn't make it to the
+						second curve, oscillates less so improved over previous test case
 75		30		100		Same as above
 75		20		100		Smoother but still would get off track as soon as second turn started
 75		20		200		Same as above :/
 75		20		200		Started from other side of track and it still got off on the bad turn
-75		20		100		Works p well on both tracks, still gets off on that one part of the track, not sure if that's the track problem or a car problem
+75		20		100		Works p well on both tracks, still gets off on that one part of the track, not sure
+						if that's the track problem or a car problem
 
+**Slowed inner wheel more for high error**
 65		40		100		Worked on the whole track! :) But, it was wavy the whole time (use slow inner wheel code)
 
 75		40		150		Works on the track with the slow inner wheel code! Sometimes doesn't stop
